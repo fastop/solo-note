@@ -1,2 +1,5 @@
-# solo-note
+# Solo-Note
+
 Solo Note Project
+
+
