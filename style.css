@@ -12,7 +12,8 @@ body {
 }
 
 .container {
-    max-width: 600px;
+    /* max-width: 600px; */
+    max-width: 1000px;
     margin: 0 auto;
 }
 
@@ -208,6 +209,11 @@ body {
 .empty-state p {
     font-size: 1.1em;
     opacity: 0.9;
+}
+
+#txtTitle {
+    font-weight: bolder;
+    color: dimgray;
 }
 
 @keyframes slideDown {
