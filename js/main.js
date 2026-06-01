@@ -202,7 +202,7 @@ function addPostX(author, content, title) {
             });
     }
  
-    // Función para renderizar los posts
+    // Función para renderizar los posts del SERVER
     function renderPostsX(posts) {
 
         if (posts.length === 0) {
@@ -226,7 +226,7 @@ function addPostX(author, content, title) {
                     <div class="post-stats">
                         <span>❤️ ${post.thumb}</span>
                         <span onclick="editPost(${post.id})"> ✏️</span>
-                        <span>${post.date}</span>
+                        <span>${post.date.slice(0, -8)}</span>
                     </div>
                     <button class="btn-delete" onclick="deletePost(${post.id})">Eliminar</button>
                 </div>
@@ -236,7 +236,7 @@ function addPostX(author, content, title) {
     }
 
 
-    // Función para renderizar los posts
+    // Función para renderizar los posts LOCALES
     function renderPostsY(post) { 
 
         let postsContainer = `
@@ -250,7 +250,7 @@ function addPostX(author, content, title) {
                     <div class="post-stats">
                          <span>❤️ 0 </span>
                          <span>💬 0  </span>
-                         <span>${post.date}</span>
+                         <span>${post.date.slice(0, -8)}</span>
                     </div>
                     <div class="spinner-border text-secondary" role="status">
                         <span class="visually-hidden">Loading...</span>

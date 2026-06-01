@@ -176,6 +176,7 @@ textarea{
     padding: 14px 16px;
     border-radius: 10px;
     margin-bottom: 18px;
+    display: none;
 }
 
 .login-note {
@@ -266,4 +267,9 @@ textarea{
     .post {
         padding: 15px;
     }
+}
+
+
+.modal-dialog {
+        margin-top: 10rem !important;
 }

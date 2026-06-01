@@ -2,29 +2,10 @@
 session_start();
 
 if (isset($_SESSION['username'])) {
-    header('Location: posting.html');
+    header('Location: posting.php');
     exit;
 }
-
-$users = [
-    'admin' => 'demo123'
-];
-
-$error = '';
-$username = '';
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = trim($_POST['username'] ?? '');
-    $password = $_POST['password'] ?? '';
-
-    if (isset($users[$username]) && $users[$username] === $password) {
-        $_SESSION['username'] = $username;
-        header('Location: posting.html');
-        exit;
-    }
-
-    $error = 'Usuario o contraseña incorrectos.';
-}
+ 
 ?>
 
 
@@ -37,6 +18,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
     <link rel="stylesheet" href="style.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+
+
 </head>
 <body>
     <div class="container">
@@ -46,11 +30,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
 
         <div class="form-container">
-            <?php if ($error): ?>
-                <div class="login-error"><?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?></div>
-            <?php endif; ?>
+            
+            <div class="login-error"> </div>
+            
 
-            <form method="post" action="index.php" autocomplete="off">
+            <form id="frm-login" name="frm-login"   autocomplete="off">
                 <div class="form-group">
                     <label for="username">Usuario</label>
                     <input
@@ -59,9 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         name="username"
                         placeholder="Ingresa tu usuario"
                         required
-                        maxlength="50"
-                        value="<?= htmlspecialchars($username, ENT_QUOTES, 'UTF-8') ?>"
-                    >
+                        maxlength="50">
                 </div>
 
                 <div class="form-group">
@@ -72,19 +54,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         name="password"
                         placeholder="Ingresa tu contraseña"
                         required
-                        maxlength="50"
-                    >
+                        maxlength="50">
                 </div>
 
                 <button type="submit" class="btn-submit">Entrar</button>
             </form>
-
-            <p class="login-note">Usuario de prueba: <strong>admin</strong> / Contraseña: <strong>demo123</strong></p>
+            
         </div>
     </div>
 
+    
+
 
     <script src="js/index.js"></script>
+
+    <!-- Modal Bootstrap añadido -->
+    <div class="modal fade" id="miModal" tabindex="-1" aria-labelledby="miModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="miModalTitle"> </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body" id="miModalBody">
+                    
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 </body>
 </html>

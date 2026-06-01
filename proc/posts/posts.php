@@ -30,7 +30,8 @@ function getAllPosts() {
    global $db;
 
     // Obtener todos los posts
-    $sql = "SELECT id, author, title, content, created_at, date, time, thumb, comment, status FROM posts  ORDER BY id DESC";
+    // $sql = "SELECT id, author, title, content, created_at, date, time, thumb, comment, status FROM posts  ORDER BY id DESC";
+     $sql = "SELECT id, author, title, content, created_at, date, time, thumb, comment, status FROM posts ORDER BY created_at DESC";
     $allPosts = $db->select($sql);
  
    echo json_encode($allPosts);
@@ -50,9 +51,9 @@ function insertPost() {
         'author' => $author,
         'title' => $post["title"],
         'content'=> $post["content"],
-        'date'   => $post["date"],
+        'date'   => substr($post["date"], 0, -4), //Le quitamos el año para que se vea mas bonito
         'time'   => $post["time"],
-    ];
+    ]; 
 
     $postId = $db->insert('posts', $newPost);
     echo "$postId";
