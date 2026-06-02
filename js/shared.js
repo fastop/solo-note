@@ -17,7 +17,20 @@ $(function(){
     //Edit post
     $("#btn-modPost").click(function(){ saveNMod(); });
 
+    //--------------------------------------------------
 
+    $(document).on('click','.likey', function(){ addLikey(this.attributes[2].value); });
+    $(document).on('click','.comment', function(){addComment(this.attributes[2].value); });
+
+
+
+    $("#btnOrderUP").click(function(){ 
+       console.log('Order UP!'); 
+    });
+
+    $("#btnOrderDOWN").click(function(){ 
+       console.log('Order DOWN!'); 
+    });
 
 
  });
@@ -108,7 +121,6 @@ function renderPosts() {
     `).join('');
 }
 
- 
 
 // Función para agregar un nuevo post
 function addPost(author, content) {
@@ -160,7 +172,7 @@ function addPostX(author, content, title) {
 
 //////////////////////////////////////////////////////////
 // Event listener para el formulario
-    postForm.addEventListener('submit', (e) => {
+/*     postForm.addEventListener('submit', (e) => {
         e.preventDefault();
         
         const author = getSimpleTimeAMPM(); //authorInput ? authorInput.value : '6:53 p.m.';
@@ -171,7 +183,7 @@ function addPostX(author, content, title) {
             addPostX(author, content, title);
         }
 
-    });
+    }); */
 
 
     function fixMyDate(date) {        
@@ -249,16 +261,17 @@ function addPostX(author, content, title) {
                 <div class="post-content">${escapeHtml(post.content)}</div>
                 <div class="post-footer">
                     <div class="post-stats">
-                        <span>❤️ ${post.thumb}</span>
-                        <span onclick="editPost(${post.id})" class="cursor-pointer"> ✏️</span>
+                        <span id="loadr-${post.id}" class="hidex"><div class="spinner-border sppiner" role="status"></div></span>
+
+                        <span  id="likey-${post.id}" class="cursor-pointer likey" data-likey ="${post.id}">❤️ <span id="laiky-${post.id}"> ${post.thumb} </span></span>
+                        <span class="cursor-pointer comment" data-comment = "${post.id}">💬 0 </span>
                         <span>${fixMyDate(post.date)}</span>
                     </div>
 
                     <input type="hidden" id="fullFecha-${post.id}" value="${post.created_at}">
                     <input type="hidden" id="textFecha-${post.id}" value="${post.date}">
                     <input type="hidden" id="tiempoAMPM-${post.id}" value="${post.time}">
-
-                    <button class="btn-delete" onclick="deletePost(${post.id})">Eliminar</button>
+                    
                 </div>
             </div>
         `).join('');
@@ -438,4 +451,48 @@ function addPostX(author, content, title) {
 
 
 
+    }
+
+
+    /** ************************************************************************* 
+     * 
+     * 
+     * 
+     * 
+     ************************************************************************* */
+
+    function addLikey(sid){
+
+        $("#likey-"+sid).addClass("hidex")
+        $("#loadr-"+sid).removeClass("hidex")
+
+
+        $.ajax({
+            url: "proc/posts/likeAndComments.php",
+            type: "POST",
+            data: { opc: 1, sid: sid },
+            dataType: 'json',
+            success: function (RES) {
+                console.log(RES);
+
+                $("#likey-"+sid).removeClass("hidex");
+                $("#loadr-"+sid).addClass("hidex");
+
+                $("#laiky-"+sid).html(RES.CC)
+                
+
+            },
+            error: function (jqXHR, status, error) {
+                console.log("ERROR: algo fallo por ahi... ");
+                console.log(jqXHR);
+            },
+        });
+
+
+
+
+    }
+    
+    function addComment(sid){
+        console.log("Comento Comento "+ sid);
     }

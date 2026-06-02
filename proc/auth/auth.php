@@ -9,15 +9,15 @@ require_once '../Database.php';
 $db = new Database('../mi_blog.db');
 
  
-    $opc = 1; //$_POST["opc"];
+    $opc = $_POST["opc"];
 
     switch($opc) {
         case 1:
             checkUser();
             break;
-//        case 2:
-//            insertPost();
-//            break;
+         case 2:
+            logout();
+            break;
 //        case 3:
 //            deletePost();
 //            break;
@@ -85,3 +85,10 @@ function checkUser(){
                 }
             */
  }
+
+
+
+    function logout(){
+        session_destroy();
+        echo json_encode(["msg" => "index.php"]);
+    }   

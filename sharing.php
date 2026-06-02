@@ -37,32 +37,8 @@ if (!isset($_SESSION['username'])) {
             <p>Comparte tus pensamientos en tiempo real</p>
         </div>
 
-        <div class="form-container">
-            <form id="postForm">
-
-                <div class="form-group">
-                    <!-- <label for="txtTitle">Titulo</label> -->
-                    <input 
-                        type="text" 
-                        id="txtTitle" 
-                        name="txtTitle" 
-                        placeholder="Titulo"                         
-                        maxlength="150">
-                </div> 
-
-                <div class="form-group">
-                    <label for="content">¿Qué estás pensando?</label>
-                    <textarea 
-                        id="content" 
-                        name="content" 
-                        placeholder="Escribe tu mensaje aquí..." 
-                        required
-                        maxlength="5000"
-                    ></textarea>
-                </div>
-
-                <button type="submit" class="btn-submit">Publicar Ahora</button>
-            </form>
+        <div class="form-container">✋ Esta viendo las publicaciones de: <strong>MeMaster </strong> 
+            <div style="float: right;"> <span class="cursor-pointer" id="btnOrderUP">🔼</span> <span class="cursor-pointer" id="btnOrderDOWN">🔽</span> </div>
         </div>
 
         <div id="postsContainer" class="posts-container">
@@ -73,7 +49,7 @@ if (!isset($_SESSION['username'])) {
         </div>
     </div>
 
-    <script src="js/main.js"></script>
+    <script src="js/shared.js"></script>
 
 
 

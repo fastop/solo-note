@@ -17,6 +17,7 @@ if (isset($_SESSION['username'])) {
     <title>Ingreso al sistema</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
     <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 
@@ -79,9 +80,9 @@ if (isset($_SESSION['username'])) {
                 <div class="modal-body" id="miModalBody">
                     
                 </div>
-                <div class="modal-footer">
+<!--                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Ok</button>
-                </div>
+                </div> -->
             </div>
         </div>
     </div>

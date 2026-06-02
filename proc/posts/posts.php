@@ -1,5 +1,5 @@
 <?php
-
+session_start();
 
 require_once '../Database.php';
 
@@ -30,8 +30,13 @@ function getAllPosts() {
    global $db;
 
     // Obtener todos los posts
-    // $sql = "SELECT id, author, title, content, created_at, date, time, thumb, comment, status FROM posts  ORDER BY id DESC";
-     $sql = "SELECT id, author, title, content, created_at, date, time, thumb, comment, status FROM posts ORDER BY created_at DESC";
+    
+     // $sql = "SELECT id, author, title, content, created_at, date, time, thumb, status FROM posts WHERE status = 0 ORDER BY created_at DESC";
+
+    $sql ="SELECT id, UX.name AS author, title, content, created_at, date, time, thumb, PST.status FROM posts PST
+            LEFT JOIN users AS UX ON PST.author = UX.id_user 
+            WHERE PST.status = 0 ORDER BY created_at DESC";
+
     $allPosts = $db->select($sql);
  
    echo json_encode($allPosts);
@@ -42,7 +47,7 @@ function getAllPosts() {
 function insertPost() {
     global $db;
 
-    $author ="MeMaster";//Lo deberiamos de tomar de la session
+    $author = $_SESSION["user_id"]; //"MeMaster";//Lo deberiamos de tomar de la session
     $post = $_POST["post"];//Aqui deberiamos de recibir el post desde el cliente, pero por ahora lo vamos a hardcodear
 
    //Insertar un nuevo post
@@ -51,9 +56,10 @@ function insertPost() {
         'author' => $author,
         'title' => $post["title"],
         'content'=> $post["content"],
-        'date'   => substr($post["date"], 0, -4), //Le quitamos el año para que se vea mas bonito
+        'created_at' => date('Y-m-d H:i:s'),
+        'date'   => $post["date"],
         'time'   => $post["time"],
-    ]; 
+    ];  
 
     $postId = $db->insert('posts', $newPost);
     echo "$postId";
@@ -61,8 +67,15 @@ function insertPost() {
 }
 
 
-
 function deletePost() {
+    global $db;
+    $postId = $_POST["sid"]; //ID
+
+    $updated = $db->update('posts', ['status' => '1'], 'id = ?', [$postId]);
+     echo json_encode(['success' => true]);
+}
+
+function deletePostHard() {
     global $db;
 
     $postId = $_POST["sid"];    
