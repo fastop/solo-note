@@ -13,14 +13,30 @@ $(function(){
     $("#logoutOpc").click(function(){ showLogout(); });
     $("#btnLogout").click(function(){ logout(); });
 
+    //Posting
+    $("#postingOpc").click(function(){ posting(); });
+
 
     //Edit post
     $("#btn-modPost").click(function(){ saveNMod(); });
 
+    //Send Comment
+    $("#btn-send-comment").click(function(){ sendComment(); });
+    
+
+    //Cambio de contraseña
+    $("#btn-changePassword").click(function(){
+        changePassword(); 
+    });
+
+    $("#profileModal").on('hidden.bs.modal', function() {
+       $("#changePasswordForm")[0].reset();
+    });
+
     //--------------------------------------------------
 
-    $(document).on('click','.likey', function(){ addLikey(this.attributes[2].value); });
-    $(document).on('click','.comment', function(){addComment(this.attributes[2].value); });
+    $(document).on('click','.likey', function(){ addLikey(this.attributes["data-likey"].value); });
+    $(document).on('click','.comment', function(){ addComment(this.attributes["data-comment"].value); });
 
 
 
@@ -32,6 +48,14 @@ $(function(){
        console.log('Order DOWN!'); 
     });
 
+
+   // $('#commentDetails').on('toggle', function() {
+   //     if (this.open) {
+   //         console.log('Details opened');
+   //     } else {
+   //         console.log('Details closed');
+   //     }
+   // });
 
  });
 
@@ -199,6 +223,8 @@ function addPostX(author, content, title) {
   ****************************************************************** */
 
     loadPosts();//Cargamos al entrar
+    getSharedUser(); //Cargamos el nombre
+    
 
     function getSimpleTimeAMPM(date = new Date()) {
         let hours = date.getHours();
@@ -223,14 +249,24 @@ function addPostX(author, content, title) {
     }
  
     function loadPosts(){
+
+        let PP = $("#PEPE").val();
+
             $.ajax({
                 url: "proc/posts/posts.php",
                 type: "POST",
-                data: { opc: 1 },
+                data: { opc: 6, PP:PP },
                 dataType: 'json',
                 success: function (RES) {
-                 //   console.log(RES);
-                    renderPostsX(RES);
+                 
+                    if(RES.error === undefined){
+                        $(".form-container").removeClass("d-none");
+                        
+                        renderPostsX(RES);
+                    }
+                    else
+                        $(".empty-state p").html(RES.msg);
+                  
                 },
                 error: function (jqXHR, status, error) {
                     console.log("ERROR: algo fallo por ahi... ");
@@ -246,7 +282,7 @@ function addPostX(author, content, title) {
             postsContainer.innerHTML = `
                 <div class="empty-state">
                     <div class="empty-state-icon">✨</div>
-                    <p>Aún no hay posts. ¡Sé el primero en publicar!</p>
+                    <p>Aún no hay posts. ¡Sé el primero en leer las novedades!</p>
                 </div>
             `;
             return;
@@ -263,8 +299,8 @@ function addPostX(author, content, title) {
                     <div class="post-stats">
                         <span id="loadr-${post.id}" class="hidex"><div class="spinner-border sppiner" role="status"></div></span>
 
-                        <span  id="likey-${post.id}" class="cursor-pointer likey" data-likey ="${post.id}">❤️ <span id="laiky-${post.id}"> ${post.thumb} </span></span>
-                        <span class="cursor-pointer comment" data-comment = "${post.id}">💬 0 </span>
+                        <span  id="likey-${post.id}" class="cursor-pointer likey" data-likey ="${post.id}">❤️ <span id="laiky-${post.id}"> ${post.likey} </span></span>
+                        <span id="comment-${post.id}" class="cursor-pointer comment" data-comment = "${post.id}">💬 ${post.comments} </span>
                         <span>${fixMyDate(post.date)}</span>
                     </div>
 
@@ -415,44 +451,6 @@ function addPostX(author, content, title) {
 
 
 
-    function editPost(id){
-
-        let text = $("#post-"+id+" .post-author").text();
-        let cleaned = text.split('👤 ').join('');
-
-        $("#txtTitleMOD").val(cleaned); //$("#post-"+id+" .post-author").text());
-        $("#contentMOD").val($("#post-"+id+" .post-content").text());
-        $("#idMOD").val(id);
-
-
-        $("#txtDateMOD").val($("#fullFecha-"+id).val());
-        $("#txtTmeMOD").val($("#post-"+id+" .post-time").text());
-          
-
-       $("#ModModal").modal("show");        
-    }
-
-
-    function saveNMod(){
-
-            let SID = $("#idMOD").val();//ID
-
-        //Colocamos los datos de donde viene la publicacion.
-
-            $("#post-"+SID+" .post-author").text( $("#txtTitleMOD").val() ); // post-author
-            $("#post-"+SID+" .post-content").text( $("#contentMOD").val() ); // post-content
-
-            // post-author
-            // post-time
-            // post-stats
-
-
-            //Colocamos los datos en la base de datos. 
-
-
-
-    }
-
 
     /** ************************************************************************* 
      * 
@@ -487,12 +485,149 @@ function addPostX(author, content, title) {
                 console.log(jqXHR);
             },
         });
-
-
-
-
+ 
     }
     
-    function addComment(sid){
-        console.log("Comento Comento "+ sid);
+
+    function posting() {
+        location.href = "posting.php";
+    }
+
+
+
+    function addComment(sid){ 
+
+        $("#idComment").val(sid);//Colocamos el ID del post
+        $("#CommentModal").modal("show");
+
+         loadComments(sid);
+    }
+
+
+
+    function sendComment(){
+
+       let datamon = $("#postCommentForm").serialize() + "&opc=2"+"&sid="+$("#idComment").val();
+         
+
+       $("#btn-send-comment").prop("disabled", true);
+       $("#btn-send-comment").html("<div class='spinner-border' role='status'></div>");
+            
+            $.ajax({
+                url: "proc/posts/likeAndComments.php",
+                type: "POST",
+                data: datamon,
+                dataType: 'json',
+                success: function (RES) {
+                    console.log(RES);
+
+                    $("#btn-send-comment").prop("disabled", false);
+                    $("#btn-send-comment").html("Comentar!");
+                    $("#comment-"+$("#idComment").val()).html(`💬 ${RES.error}`); //Actualizamos el contador de comentarios del post
+                    
+                    $("#CommentModal").modal("hide");//Ocultamos la ventana modal
+                    $("#postCommentForm")[0].reset();//Reseteamos el form
+
+                },
+                error: function (jqXHR, status, error) {
+                    console.log("ERROR: algo fallo por ahi... ");
+                    console.log(jqXHR);
+                },
+            });
+  
+    }
+ 
+
+    function loadComments(sid){
+
+        $("#commentsContainer").html(""); //Limpiamos los comentarios anteriores
+        $.ajax({
+            url: "proc/posts/likeAndComments.php",
+            type: "POST",
+            data: { opc: 3, sid: sid },
+            dataType: 'json',
+            success: function (RES) {
+                console.log(RES);
+
+                RES.forEach(comment => {
+                    $("#commentsContainer").append(`
+                            <div class="post" >
+                                <div class="post-header"><span class="post-author">👤 ${comment.comment_title}</span><span class="post-time">${getSimpleTimeAMPM(new Date(comment.created_at))}</span></div>
+                                <div class="post-content">${comment.comment}</div>
+                                <div class="post-footer"> <div class="post-stats"><span>${comment.created_at}</span></div> </div>
+                            </div>
+                    `);
+                });
+            },
+            error: function (jqXHR, status, error) {
+                console.log("ERROR: algo fallo por ahi... ");
+                console.log(jqXHR);
+            },
+        });
+
+    }
+
+    function changePassword(e){
+
+        if (!$('#changePasswordForm')[0].checkValidity())
+            $('#changePasswordForm')[0].reportValidity();
+        else {
+             
+
+            if( $("#txtPW1").val() !== $("#txtPW2").val()){
+                alert("Las contraseñas NO son iguales");
+            } else {
+          
+               //deshabilitamos el boton            
+                 $("#btn-changePassword").prop("disabled", true);
+                 $("#btn-changePassword").html("<div class='spinner-border' role='status'></div>"); //Colocamos un cargador en el boton
+
+            let datamon = $("#changePasswordForm").serialize() + "&opc=3";
+
+                $.ajax({
+                    url: "proc/auth/auth.php",
+                    type: "POST",
+                    data: datamon,
+                    dataType: 'json',
+                    success: function (RES) {
+
+                        $("#btn-changePassword").prop("disabled", false);
+                        $("#btn-changePassword").html("Cambiar Contraseña");
+
+                        $("#profileModal").modal("hide");
+                        alert("HECHO!");
+
+                        console.log(RES);
+                    },
+                    error: function (jqXHR, status, error) {
+                        console.log("ERROR: algo fallo por ahi... ");
+                        console.log(jqXHR);
+                    },
+               });
+
+         }//FINdeELSE 
+        }//FINdeELSE
+        
+    }//FINdeFUNCION
+
+
+
+    function getSharedUser(){
+
+          let PP = $("#PEPE").val();
+
+            $.ajax({
+                url: "proc/posts/posts.php",
+                type: "POST",
+                data: { opc: 8, PP:PP },
+                dataType: 'json',
+                success: function (RES) {                    
+                    $("#super_name").html(RES[0].nick);
+                },
+                error: function (jqXHR, status, error) {
+                    console.log("ERROR: algo fallo por ahi... ");
+                    console.log(jqXHR);
+                },
+            });
+
     }

@@ -8,18 +8,18 @@ require_once '../Database.php';
 $db = new Database('../mi_blog.db');
 
  
-    $opc = 1;//$_POST["opc"];
+    $opc = $_POST["opc"];//1;//
 
     switch($opc) {
         case 1:
             setLikey();
             break;
-//        case 2:
-//            insertPost();
-//            break;
-//        case 3:
-//            deletePost();
-//            break;
+        case 2:
+            addComment();
+            break;
+        case 3:
+            loadComments();
+            break;
         default:
             echo json_encode(['error' => 'Opción no válida']);
     }
@@ -68,9 +68,8 @@ function setLikey() {
             
 
         } else { 
-            
-            // $sql = "DELETE FROM likes WHERE id_user = ".$user." AND id_post = ".$sid;
-            // $db->delete($sql);
+            // $sql = "DELETE FROM likes WHERE id_user = ".$user." AND id_post = ".$sid;             
+             $deleted = $db->delete('likes', 'id_user = ? AND id_post = ?', [$user, $sid]);
             // echo "0";     
         }
 
@@ -84,3 +83,44 @@ function setLikey() {
 }
 
  
+
+function addComment(){
+    global $db;
+
+    $user = $_SESSION["user_id"];  
+    $sid  =  $_POST["sid"]; //ID de comment
+    $contentComment = $_POST["contentComment"];
+    $titleComment   = $_POST["txtTitleComment"];
+
+    //Insertar un nuevo post
+     $newComment = [
+         'id_comment' => null,
+         'id_user' => $user,
+         'id_post' => $sid,
+         'comment' => $contentComment,
+         'created_at' => date('Y-m-d H:i:s'),         
+         'comment_title' => $titleComment
+     ];  
+
+    $SX = $db->insert('comments', $newComment);
+
+    $SS = $db->count('comments', 'id_post = ?', [$sid]);
+    echo json_encode(['error' => $SS, 'message' => 'Comentario agregado con éxito']);
+
+}
+
+
+
+    function loadComments() {
+        global $db;
+
+        $sid  =  $_POST["sid"]; //ID de comment
+
+        $sql = "SELECT CM.id_comment, CM.comment, CM.created_at, CM.comment_title, UX.name AS author FROM comments CM
+                LEFT JOIN users AS UX ON CM.id_user = UX.id_user 
+                WHERE CM.id_post = ? ORDER BY created_at DESC";
+
+        $allComments = $db->select($sql, [$sid]);
+    
+      echo json_encode($allComments);
+    }

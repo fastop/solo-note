@@ -1,0 +1,121 @@
+/* 
+   Dark Mode Proposal for Micro Blog
+   Puedes aplicar este estilo añadiendo la clase "dark-mode" al body: <body class="dark-mode">
+   O también detectará automáticamente la preferencia del sistema.
+*/
+
+:root {
+    /* Variables para modo claro (default) */
+    --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --card-bg: #ffffff;
+    --text-main: #333333;
+    --text-muted: #666666;
+    --text-label: #333333;
+    --input-bg: #ffffff;
+    --input-border: #e0e0e0;
+    --input-text: #333333;
+    --accent-color: #667eea;
+    --post-border: #667eea;
+    --footer-border: #eeeeee;
+    --modal-bg: #ffffff;
+    --header-text: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root:not(.light-mode) {
+        --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+        --card-bg: #1e293b;
+        --text-main: #f1f5f9;
+        --text-muted: #94a3b8;
+        --text-label: #e2e8f0;
+        --input-bg: #0f172a;
+        --input-border: #334155;
+        --input-text: #f1f5f9;
+        --accent-color: #818cf8;
+        --post-border: #4f46e5;
+        --footer-border: #334155;
+        --modal-bg: #1e293b;
+    }
+}
+
+body.dark-mode {
+    --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+    --card-bg: #1e293b;
+    --text-main: #f1f5f9;
+    --text-muted: #94a3b8;
+    --text-label: #e2e8f0;
+    --input-bg: #0f172a;
+    --input-border: #334155;
+    --input-text: #f1f5f9;
+    --accent-color: #818cf8;
+    --post-border: #4f46e5;
+    --footer-border: #334155;
+    --modal-bg: #1e293b;
+}
+
+/* Aplicación de las variables */
+
+body {
+    background: var(--bg-gradient) !important;
+    color: var(--text-main);
+}
+
+.form-container, .post, .modal-content {
+    background-color: var(--card-bg) !important;
+    color: var(--text-main);
+}
+
+.post {
+    border-left-color: var(--post-border) !important;
+}
+
+.post-author {
+    color: var(--accent-color) !important;
+}
+
+.post-content, .form-group label, .modal-title, legend {
+    color: var(--text-main) !important;
+}
+
+.post-time, .post-stats, .login-note, #txtTitle {
+    color: var(--text-muted) !important;
+}
+
+.post-footer, fieldset {
+    border-top-color: var(--footer-border) !important;
+    border-color: var(--footer-border) !important;
+}
+
+.form-group input, 
+.form-group textarea,
+.modal-header,
+.modal-footer {
+    background-color: var(--input-bg) !important;
+    border-color: var(--input-border) !important;
+    color: var(--input-text) !important;
+}
+
+.form-group input::placeholder, 
+.form-group textarea::placeholder {
+    color: var(--text-muted);
+    opacity: 0.6;
+}
+
+/* Botones de cerrar en modales para que se vean en oscuro */
+.btn-close {
+    filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+body.light-mode .btn-close,
+@media (prefers-color-scheme: light) {
+    :root:not(.dark-mode) .btn-close {
+        filter: none;
+    }
+}
+
+/* Ajuste para el menú de usuario */
+#userMenu {
+    background-color: rgba(0, 0, 0, 0.8) !important;
+    backdrop-filter: blur(5px);
+    border: 1px solid var(--footer-border);
+}

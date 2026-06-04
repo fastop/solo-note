@@ -16,6 +16,8 @@ if (!isset($_SESSION['username'])) {
     <title>Micro Blog</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="" id="dark-mode">
+
     <link rel="icon" href="favicon.svg" type="image/svg+xml">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
@@ -24,9 +26,12 @@ if (!isset($_SESSION['username'])) {
 <body>
 
 <div id="userMenu" >
-
+  <span class="cursor-pointer" id="darkToggle">☀️</span>
+    &nbsp; 
   <span class="cursor-pointer" id="profileOpc">👤</span> 
-  <span class="cursor-pointer" id="configOpc"> ⚙️</span> 
+  <span class="cursor-pointer" id="configOpc"> ⚙️</span>
+  <span class="cursor-pointer" id="sharedOpc"> 🔗</span>
+  
   <span class="cursor-pointer" id="logoutOpc"> ▶️ </span>
 
 </div>
@@ -74,6 +79,7 @@ if (!isset($_SESSION['username'])) {
     </div>
 
     <script src="js/main.js"></script>
+    <script src="js/dark-mode.js"></script>
 
 
 
@@ -83,16 +89,27 @@ if (!isset($_SESSION['username'])) {
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="profileModalTitle">👤 Perfil </h5>
+                        <h5 class="modal-title" id="profileModalTitle">👤 Perfil :: <?=$_SESSION["nick"] ?></h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                     </div>
-                    <div class="modal-body" id="profileModalBody">
-                        PERFIL
+                    <div class="modal-body" id="profileModalBody"> 
+
+                        <fieldset>
+                            <legend>🔑 Cambio de Contraseña</legend>
+                            
+
+                            <div class="form-group">
+                                <form id="changePasswordForm" name="changePasswordForm" method="post" action="">
+                                    <input type="password" id="txtPW1" name="txtPW1" placeholder="Nueva Contraseña:" maxlength="150" class="mb-1" required>
+                                    <input type="password" id="txtPW2" name="txtPW2" placeholder="Repita Contraseña" maxlength="150" class="mb-1" required>
+                                    <button type="button" class="btn-submit" id="btn-changePassword">Cambiar Contraseña</button>
+                                    
+                                </form>
+                            </div> 
+ 
+                        </fieldset>
 
 
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Ok</button>
                     </div>
                 </div>
             </div>
@@ -108,9 +125,7 @@ if (!isset($_SESSION['username'])) {
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
                 <div class="modal-body" id="configModalBody">
-                    CONFIGURACIÓN
-
-
+                    CONFIGURACIÓN COMING SOOON
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Ok</button>
@@ -120,7 +135,7 @@ if (!isset($_SESSION['username'])) {
     </div>
 
 
-    <!-- Modal Bootstrap CONFIG -->
+    <!-- Modal Bootstrap LOGOUT -->
     <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModal" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -179,19 +194,36 @@ if (!isset($_SESSION['username'])) {
                         <input type="hidden" id="idMOD" name="idMOD" value=""> <!-- Campo oculto para almacenar el ID del post a modificar -->
                         <button type="button" class="btn-submit" id="btn-modPost">Actualizar Ahora</button>
                     </form>
-                </div>
+                </div> 
 
-
-                </div>
-<!--                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" id="btnSaveModify">Modificar</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                </div> -->
+                </div> 
             </div>
         </div>
     </div>
 
 
+
+
+    
+    <!-- Modal Bootstrap SHARED -->
+    <div class="modal fade" id="SharedModal" tabindex="-1" aria-labelledby="SharedModal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="SharedModalTitle">🔗 Compartidos </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body" id="SharedModal">
+
+                
+                    <div class="form-container" id="sharedList">
+                        <button type="button" class="btn-submit sharedx" data-ides="3477152822">Blog Memaster</button>
+                    </div> 
+
+                </div> 
+            </div>
+        </div>
+    </div>
 
 
 

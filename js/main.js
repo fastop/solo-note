@@ -5,6 +5,9 @@ $(function(){
 
     //Profile
     $("#profileOpc").click(function(){ showProfile(); }); 
+    $("#profileModal").on('hidden.bs.modal', function() {
+       $("#changePasswordForm")[0].reset();
+    });
 
     //Options
     $("#configOpc").click(function(){ showConfig() }); 
@@ -13,11 +16,22 @@ $(function(){
     $("#logoutOpc").click(function(){ showLogout(); });
     $("#btnLogout").click(function(){ logout(); });
 
+    //shared
+    $("#sharedOpc").click(function(){ shareds(); });
+    
 
     //Edit post
     $("#btn-modPost").click(function(){ saveNMod(); });
 
 
+    //Cambio de contraseña
+    $("#btn-changePassword").click(function(){
+        changePassword(); 
+    });
+
+    $(document).on('click','.sharedx', function(){      
+      location.href="shared.php?p="+$(this).data("ides");
+    });
 
 
  });
@@ -187,6 +201,7 @@ function addPostX(author, content, title) {
   ****************************************************************** */
 
     loadPosts();//Cargamos al entrar
+    loadShared();
 
     function getSimpleTimeAMPM(date = new Date()) {
         let hours = date.getHours();
@@ -214,7 +229,7 @@ function addPostX(author, content, title) {
             $.ajax({
                 url: "proc/posts/posts.php",
                 type: "POST",
-                data: { opc: 1 },
+                data: { opc: 5 },
                 dataType: 'json',
                 success: function (RES) {
                  //   console.log(RES);
@@ -249,7 +264,7 @@ function addPostX(author, content, title) {
                 <div class="post-content">${escapeHtml(post.content)}</div>
                 <div class="post-footer">
                     <div class="post-stats">
-                        <span>❤️ ${post.thumb}</span>
+                        <span>❤️ ${post.likey} (${post.comments})</span>
                         <span onclick="editPost(${post.id})" class="cursor-pointer"> ✏️</span>
                         <span>${fixMyDate(post.date)}</span>
                     </div>
@@ -422,20 +437,133 @@ function addPostX(author, content, title) {
 
     function saveNMod(){
 
-            let SID = $("#idMOD").val();//ID
+        let SID = $("#idMOD").val();//ID
+           //deshabilitamos el boton            
+             $("#btn-modPost").prop("disabled", true);
+             $("#btn-modPost").html("<div class='spinner-border' role='status'></div>"); //Colocamos un cargador en el boton
 
+            
         //Colocamos los datos de donde viene la publicacion.
 
             $("#post-"+SID+" .post-author").text( $("#txtTitleMOD").val() ); // post-author
             $("#post-"+SID+" .post-content").text( $("#contentMOD").val() ); // post-content
 
-            // post-author
-            // post-time
-            // post-stats
-
+                //Por el momento no me interesa cambiar la fecha y hora :V
+                //Eso sera para despues :P
 
             //Colocamos los datos en la base de datos. 
 
+            let vals = $("#postModForm").serialize() + "&opc=4"+"&sid="+SID;
 
+            $.ajax({
+                url: "proc/posts/posts.php",
+                type: "POST",
+                data: vals,
+                dataType: 'json',
+                success: function (RES) {
+                    console.log(RES);  
+
+                    $("#btn-modPost").prop("disabled", false);
+                    $("#btn-modPost").html("Actualizar Ahora");
+
+                    //Colocamos los datos en el POST
+                     $("#post-"+SID+" .post-author").text( "👤 "+$("#txtTitleMOD").val() ); // post-author
+                     $("#post-"+SID+" .post-content").text( $("#contentMOD").val() ); // post-content
+
+                     $("#ModModal").modal("hide");//Ocultamos la ventana modal
+
+                },
+                error: function (jqXHR, status, error) {
+                    console.log("ERROR: algo fallo por ahi... ");
+                    console.log(jqXHR);
+                },
+            }); 
+
+    }
+
+
+    function shareds() {
+      $("#SharedModal").modal('show')
+    }
+
+
+
+
+
+    function changePassword(e){
+
+        if (!$('#changePasswordForm')[0].checkValidity())
+            $('#changePasswordForm')[0].reportValidity();
+        else {
+             
+
+            if( $("#txtPW1").val() !== $("#txtPW2").val()){
+                alert("Las contraseñas NO son iguales");
+            } else {
+          
+               //deshabilitamos el boton            
+                 $("#btn-changePassword").prop("disabled", true);
+                 $("#btn-changePassword").html("<div class='spinner-border' role='status'></div>"); //Colocamos un cargador en el boton
+
+            let datamon = $("#changePasswordForm").serialize() + "&opc=3";
+
+                $.ajax({
+                    url: "proc/auth/auth.php",
+                    type: "POST",
+                    data: datamon,
+                    dataType: 'json',
+                    success: function (RES) {
+
+                        $("#btn-changePassword").prop("disabled", false);
+                        $("#btn-changePassword").html("Cambiar Contraseña");
+
+                        $("#profileModal").modal("hide");
+                        alert("HECHO!");
+
+                        console.log(RES);
+                    },
+                    error: function (jqXHR, status, error) {
+                        console.log("ERROR: algo fallo por ahi... ");
+                        console.log(jqXHR);
+                    },
+               });
+
+         }//FINdeELSE 
+        }//FINdeELSE
+        
+    }//FINdeFUNCION 
+
+
+
+
+
+    function loadShared(){
+
+        $.ajax({
+            url: "proc/posts/posts.php",
+            type: "POST",
+            data: { opc: 7},
+            dataType: 'json',
+            success: function (RES) {
+               // console.log(RES);
+                showShared(RES)
+            },
+            error: function (jqXHR, status, error) {
+                console.log("ERROR: algo fallo por ahi... ");
+                console.log(jqXHR);
+            },
+        });
+    }
+
+    function showShared(RES){
+
+      if (RES.length === 0) {
+            $("#sharedList").html(`<div class=""><p>Aún no han compartido nada contigo :(</p></div>`);
+            return;
+        }
+
+         let xtmp = RES.map((shared, index) => `<button type="button" class="btn-submit sharedx mb-1" data-ides="${shared.shared_code}">Blog ${shared.nick}</button>`).join('');
+
+         $("#sharedList").html(xtmp);
 
     }
