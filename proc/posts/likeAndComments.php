@@ -79,6 +79,8 @@ function setLikey() {
 
     // echo $allPosts[0]["CC"];
     echo json_encode($allPosts[0]);
+
+      loggr($_SESSION['user_id'], $_SESSION['nick'],"Set Like");
     
 }
 
@@ -107,6 +109,8 @@ function addComment(){
     $SS = $db->count('comments', 'id_post = ?', [$sid]);
     echo json_encode(['error' => $SS, 'message' => 'Comentario agregado con éxito']);
 
+    loggr($_SESSION['user_id'], $_SESSION['nick'],"Add Comment");
+
 }
 
 
@@ -123,4 +127,31 @@ function addComment(){
         $allComments = $db->select($sql, [$sid]);
     
       echo json_encode($allComments);
+
+        loggr($_SESSION['user_id'], $_SESSION['nick'],"Load Comments");
+    }
+
+
+    
+    /** 
+     *   @brief Metodo para 
+     *     
+     *   @param id_user id de usuario (int)
+     *   @param user	Nick del usuario por comodidad (string)
+     *   @param type	Tipo de movimiento (login, logout, passw) (string)
+     *  
+     */
+    function loggr($id_user, $user, $type){
+        global $db;
+  
+            $newLog = [
+                'id_logs' => null,
+                'type' => $type,
+                'date' => date('Y-m-d H:i:s'),
+                'id_user' => $id_user,                
+                'user' => $user
+            ];  
+
+           $db->insert('logs', $newLog); 
+
     }

@@ -119,3 +119,7 @@ body.light-mode .btn-close,
     backdrop-filter: blur(5px);
     border: 1px solid var(--footer-border);
 }
+
+
+ 
+   summary { color:white !important;}

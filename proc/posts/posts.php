@@ -63,6 +63,8 @@ function getAllPosts() {
     $allPosts = $db->select($sql);
  
    echo json_encode($allPosts);
+
+    loggr($_SESSION['user_id'], $_SESSION['nick'],"Get All Posts");
 }
 
 
@@ -81,6 +83,7 @@ function getAllMyPosts() {
     $allPosts = $db->select($sql);
  
    echo json_encode($allPosts);
+     loggr($_SESSION['user_id'], $_SESSION['nick'],"getAllMyPosts");
 }
 
 
@@ -108,7 +111,9 @@ function getAllPostsOf() {
                         WHERE PST.status = 0  AND author = $UXR ORDER BY created_at DESC";
 
             $allPosts = $db->select($sql);
-            echo json_encode($allPosts);
+            echo json_encode($allPosts);            
+
+        loggr($_SESSION['user_id'], $_SESSION['nick'],"Viendo los Posts de:".$PEPE);
     }
     else
       echo json_encode(['error' => 1, 'msg' => "Esta publicación no ha sido compartida contigo o no existe"]);
@@ -213,3 +218,25 @@ function getSharedAuthor(){
     $allShared = $db->select($sql);
    echo json_encode($allShared);
 }
+
+
+
+
+
+
+
+ 
+    function loggr($id_user, $user, $type){
+        global $db;
+  
+            $newLog = [
+                'id_logs' => null,
+                'type' => $type,
+                'date' => date('Y-m-d H:i:s'),
+                'id_user' => $id_user,                
+                'user' => $user
+            ];  
+
+           $db->insert('logs', $newLog); 
+
+    }
