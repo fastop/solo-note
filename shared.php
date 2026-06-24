@@ -45,6 +45,7 @@ if (!isset($_SESSION['username'])) {
   <span class="cursor-pointer" id="profileOpc">👤</span> 
   <span class="cursor-pointer" id="configOpc"> ⚙️</span> 
   <span class="cursor-pointer" id="postingOpc"> 📝</span>
+  <span class="cursor-pointer" id="psicoOpc"> 🧠 </span>
   <span class="cursor-pointer" id="logoutOpc"> ▶️ </span>
 
 </div>

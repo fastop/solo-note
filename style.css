@@ -282,7 +282,7 @@ textarea{
     width: 10rem;*/
 
  #userMenu { background-color: black; position: absolute;  right: 15px; top: 0px;
-             width: 10rem; text-align: center; z-index: 9999; border-radius: 0 0 5px 5px; }
+             width: 11rem; text-align: center; z-index: 9999; border-radius: 0 0 5px 5px; }
  #userMenu span {  cursor: pointer; }
 
 
@@ -295,3 +295,5 @@ textarea{
  
  
    summary { color:white !important;}
+
+

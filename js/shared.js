@@ -16,6 +16,11 @@ $(function(){
     //Posting
     $("#postingOpc").click(function(){ posting(); });
 
+    
+    //Psyko
+    $("#psicoOpc").click(function(){ psyko(); });
+    
+
 
     //Edit post
     $("#btn-modPost").click(function(){ saveNMod(); });
@@ -294,7 +299,7 @@ function addPostX(author, content, title) {
                     <span class="post-author">👤 ${post.title} </span>
                     <span class="post-time">${post.time}</span>
                 </div>
-                <div class="post-content">${escapeHtml(post.content)}</div>
+                <div class="post-content">${post.content}</div>
                 <div class="post-footer">
                     <div class="post-stats">
                         <span id="loadr-${post.id}" class="hidex"><div class="spinner-border sppiner" role="status"></div></span>
@@ -493,7 +498,10 @@ function addPostX(author, content, title) {
         location.href = "posting.php";
     }
 
-
+    function psyko() {
+        location.href = "psy/index.php";
+    }
+ 
 
     function addComment(sid){ 
 

@@ -19,6 +19,10 @@ $(function(){
     //shared
     $("#sharedOpc").click(function(){ shareds(); });
     
+        
+    //Psyko
+    $("#psicoOpc").click(function(){ psyko(); });
+    
 
     //Edit post
     $("#btn-modPost").click(function(){ saveNMod(); });
@@ -80,13 +84,13 @@ function getRelativeTime(date) {
 
 // Función para escapar HTML y prevenir inyecciones
 function escapeHtml(text) {
-    const map = {
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#039;'
-    };
+     const map = {
+         '&': '&amp;',
+         '<': '&lt;',
+         '>': '&gt;',
+         '"': '&quot;',
+         "'": '&#039;'
+     };
     return text.replace(/[&<>"']/g, m => map[m]);
 }
 
@@ -261,7 +265,7 @@ function addPostX(author, content, title) {
                     <span class="post-author">👤 ${post.title} </span>
                     <span class="post-time">${post.time}</span>
                 </div>
-                <div class="post-content">${escapeHtml(post.content)}</div>
+                <div class="post-content">${post.content}</div>
                 <div class="post-footer">
                     <div class="post-stats">
                         <span>❤️ ${post.likey} (${post.comments})</span>
@@ -487,7 +491,9 @@ function addPostX(author, content, title) {
     }
 
 
-
+    function psyko() {
+        location.href = "psy/index.php";
+    }
 
 
     function changePassword(e){
